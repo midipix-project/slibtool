@@ -52,7 +52,7 @@ const slbt_hidden struct argv_option slbt_stoolie_options[] = {
 			"install [s]ltdl sources to %s; this option "
 			"provided is provided for the purpose of backward "
 			"compatibility, and is currently a no-op, thereby "
-			"deferring -lltdl to the system install library."},
+			"deferring -lltdl to the system installed library."},
 
 	{0,0,0,0,0,0,0,0}
 };
