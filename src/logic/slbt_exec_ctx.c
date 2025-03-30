@@ -131,6 +131,9 @@ static struct slbt_exec_ctx_impl * slbt_exec_ctx_alloc(
 		size += exts * SLBT_ECTX_LIB_EXTRAS;
 	}
 
+	/* -lsltdl (--prefer-sltdl impl.) */
+	size += 8;
+
 	/* string buffers: args, shadow */
 	if (!(args = malloc(size)))
 		return 0;
@@ -628,6 +631,11 @@ int  slbt_ectx_get_exec_ctx(
 		ch++;
 
 	}
+
+	/* -lsltdl (--prefer-sltdl impl.) */
+	ictx->lsltdl = ch;
+	strcpy(ch,"-lsltdl");
+	ch += 8;
 
 	/* dlopen, dlpreopen */
 	if ((dlopenv = idctx->dlopenv), (dlactxv = ictx->dlactxv)) {

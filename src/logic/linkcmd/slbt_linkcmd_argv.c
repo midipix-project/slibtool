@@ -1027,6 +1027,22 @@ slbt_hidden int slbt_exec_link_finalize_argument_vector(
 		}
 	}
 
+	/* replace -lltdl with -lsltdl as needed */
+	if (dctx->cctx->drvflags & SLBT_DRIVER_PREFER_SLTDL) {
+		struct slbt_exec_ctx_impl * ictx;
+
+		ictx = slbt_get_exec_ictx(ectx);
+
+		for (src=ectx->argv; *src; src++)
+			if ((src[0][0] == '-') && (src[0][1] == 'l'))
+				if ((src[0][2] == 'l')
+						&& (src[0][3] == 't')
+						&& (src[0][4] == 'd')
+						&& (src[0][5] == 'l'))
+					if (!src[0][6])
+						*src = ictx->lsltdl;
+	}
+
 	/* properly null-terminate argv, accounting for redundant -l arguments */
 	*dst = 0;
 

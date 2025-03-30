@@ -333,6 +333,12 @@ const slbt_hidden struct argv_option slbt_default_options[] = {
 				"statically link libtool libraries "
 				"[currently a no-op]"},
 
+	{"prefer-sltdl",	0,TAG_PREFER_SLTDL,ARGV_OPTARG_NONE,
+				0,0,0,
+				"prefer the use of libsltdl over the system's "
+				"ltdl library, specifically by substituting "
+				"-lltdl linker arguments with -lsltdl ones."},
+
 	{"Wc",			0,TAG_COMPILER_FLAG,ARGV_OPTARG_REQUIRED,
 				ARGV_OPTION_HYBRID_ONLY|ARGV_OPTION_HYBRID_COMMA,
 				0,"<flag>[,<flag]...",

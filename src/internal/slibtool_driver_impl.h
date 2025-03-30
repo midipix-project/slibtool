@@ -90,6 +90,7 @@ enum app_tags {
 	TAG_DISABLE_STATIC,
 	TAG_DISABLE_SHARED,
 	TAG_NO_UNDEFINED,
+	TAG_PREFER_SLTDL,
 	TAG_MODULE,
 	TAG_AVOID_VERSION,
 	TAG_COMPILER_FLAG,
@@ -209,6 +210,7 @@ struct slbt_exec_ctx_impl {
 	char *                          args;
 	char *                          shadow;
 	char *                          dsoprefix;
+	char *                          lsltdl;
 	size_t                          size;
 	size_t                          exts;
 	int                             fdwrapper;

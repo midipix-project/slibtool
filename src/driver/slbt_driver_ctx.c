@@ -810,6 +810,10 @@ int slbt_lib_get_driver_ctx(
 					cctx.drvflags |= SLBT_DRIVER_NO_UNDEFINED;
 					break;
 
+				case TAG_PREFER_SLTDL:
+					cctx.drvflags |= SLBT_DRIVER_PREFER_SLTDL;
+					break;
+
 				case TAG_MODULE:
 					cctx.drvflags |= SLBT_DRIVER_MODULE;
 					break;
