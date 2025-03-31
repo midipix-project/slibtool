@@ -54,5 +54,10 @@ const slbt_hidden struct argv_option slbt_stoolie_options[] = {
 			"compatibility, and is currently a no-op, thereby "
 			"deferring -lltdl to the system installed library."},
 
+	{"system-ltdl",0,TAG_STLE_SYSTEM_LTDL,ARGV_OPTARG_NONE,0,0,0,
+			"Do not enforce the use of libsltdl. "
+			"Without this option, --prefer-sltdl will be added to "
+			"slibtool's configured arguments."},
+
 	{0,0,0,0,0,0,0,0}
 };

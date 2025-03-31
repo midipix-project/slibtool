@@ -253,6 +253,12 @@ slibtool_set_flavor()
 			;;
 	esac
 
+	case "_${slibtool_prefer_sltdl:-}" in
+		'_yes')
+			SLIBTOOL="${SLIBTOOL} --prefer-sltdl"
+			;;
+	esac
+
 	# drop-in replacement
 	enable_shared=${slibtool_enable_shared}
 	enable_static=${slibtool_enable_static}
@@ -448,6 +454,7 @@ AC_DEFUN([SLIBTOOL_INIT],[
 AC_BEFORE([SLIBTOOL_LANG])
 AC_REQUIRE([SLIBTOOL_PREREQ])
 AC_REQUIRE([_SLIBTOOL_DEFAULTS])
+AC_REQUIRE([_SLIBTOOL_SLTDL_OPTION])
 AC_REQUIRE([_SLIBTOOL_SET_FLAVOR])
 AC_REQUIRE([_SLIBTOOL_ARGUMENT_HANDLING])
 
