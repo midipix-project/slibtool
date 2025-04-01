@@ -1,6 +1,6 @@
 /****************************************************************************/
 /*  argv.h: a thread-safe argument vector parser and usage screen generator */
-/*  Copyright (C) 2015--2024  SysDeer Technologies, LLC                     */
+/*  Copyright (C) 2015--2025  SysDeer Technologies, LLC                     */
 /*  Released under the Standard MIT License; see COPYING.SLIBTOOL.          */
 /****************************************************************************/
 
