@@ -162,6 +162,9 @@ int slbt_main(char ** argv, char ** envp, const struct slbt_fd_ctx * fdctx)
 	else if (!(strcmp(program,"slibtoolize")))
 		flags |= SLBT_DRIVER_MODE_STOOLIE | SLBT_DRIVER_PREFER_SLTDL;
 
+	else if (!(strcmp(program,"libtoolize")))
+		flags |= SLBT_DRIVER_MODE_STOOLIE | SLBT_DRIVER_PREFER_SLTDL;
+
 	/* debug */
 	if (!(strcmp(program,"dlibtool")))
 		flags |= SLBT_DRIVER_DEBUG;
