@@ -11,7 +11,7 @@
 ## ----------------------------------------------------------      ##
 ## This script only exists to satisfy build-time requirements in   ##
 ## projects that directly invoke the generated libtool script at   ##
-## configure time (bad practice to beging with, should never be    ##
+## configure time (bad practice to begin with, should never be     ##
 ## necessary in the first place).                                  ##
 ##                                                                 ##
 ## By default, slibtool.sh is _NOT_ copied to a project's build    ##
