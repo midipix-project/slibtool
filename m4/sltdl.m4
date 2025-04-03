@@ -35,5 +35,5 @@ AC_BEFORE([$0],[_SLIBTOOL_ARGUMENT_HANDLING])
 
 # slibtool: sltdl option
 # ---------------------------------
-slibtool_prefer_sltdl='yes'
+slibtool_prefer_sltdl=${slibtool_prefer_sltdl:-yes}
 ])

@@ -88,16 +88,16 @@ static int slbt_exec_stoolie_perform_actions(
 	char                            auxdir[PATH_MAX];
 	char                            slibm4[PATH_MAX];
 	char                            sltdl [PATH_MAX];
-	char                            m4ltdl[PATH_MAX];
+	char                            m4tag [PATH_MAX];
 	char                            ltmain[PATH_MAX];
 	char                            arlib [PATH_MAX];
 	bool                            fslibm4;
-	bool                            fsltdl;
 	bool                            fltmain;
+	bool                            fsysltdl;
 
 	ictx = slbt_get_stoolie_ictx(stctx);
 
-	fsltdl = (dctx->cctx->drvflags & SLBT_DRIVER_PREFER_SLTDL);
+	fsysltdl = !(dctx->cctx->drvflags & SLBT_DRIVER_PREFER_SLTDL);
 
 	/* source files */
 	if (slbt_snprintf(
@@ -109,7 +109,7 @@ static int slbt_exec_stoolie_perform_actions(
 	if (slbt_snprintf(
 			sltdl,sizeof(sltdl),"%s/%s",
 			SLBT_PACKAGE_DATADIR,
-			fsltdl ? "sltdl.m4" : "sysltdl.m4") < 0)
+			"sltdl.m4") < 0)
 		return SLBT_BUFFER_ERROR(dctx);
 
 	if (slbt_snprintf(
@@ -132,6 +132,10 @@ static int slbt_exec_stoolie_perform_actions(
 
 		if (ictx->fdm4 >= 0)
 			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdm4,"sltdl.m4") < 0)
+				return SLBT_NESTED_ERROR(dctx);
+
+		if (ictx->fdm4 >= 0)
+			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdm4,"sysltdl.tag") < 0)
 				return SLBT_NESTED_ERROR(dctx);
 
 		if (slbt_exec_stoolie_remove_file(dctx,ictx->fdaux,"ltmain.sh") < 0)
@@ -174,15 +178,19 @@ static int slbt_exec_stoolie_perform_actions(
 				return SLBT_SYSTEM_ERROR(dctx,0);
 
 			if (slbt_snprintf(
-					m4ltdl,sizeof(m4ltdl),"%s/%s",
-					m4dir,"sltdl.m4") < 0)
+					m4tag,sizeof(m4tag),"%s/%s",
+					m4dir,"sysltdl.tag") < 0)
 				return SLBT_BUFFER_ERROR(dctx);
 
 			if (slbt_util_copy_file(ectx,slibm4,m4dir) < 0)
 				return SLBT_NESTED_ERROR(dctx);
 
-			if (slbt_util_copy_file(ectx,sltdl,m4ltdl) < 0)
+			if (slbt_util_copy_file(ectx,sltdl,m4dir) < 0)
 				return SLBT_NESTED_ERROR(dctx);
+
+			if (fsysltdl)
+				if (slbt_util_copy_file(ectx,"/dev/null",m4tag) < 0)
+					return SLBT_NESTED_ERROR(dctx);
 		}
 
 		if (fltmain) {
@@ -213,6 +221,15 @@ static int slbt_exec_stoolie_perform_actions(
 					"sltdl.m4",
 					SLBT_SYMLINK_LITERAL) < 0)
 				return SLBT_NESTED_ERROR(dctx);
+
+			if (fsysltdl)
+				if (slbt_create_symlink_ex(
+						dctx,ectx,
+						ictx->fdm4,
+						"/dev/null",
+						"sysltdl.tag",
+						SLBT_SYMLINK_LITERAL) < 0)
+					return SLBT_NESTED_ERROR(dctx);
 		}
 
 		if (fltmain) {

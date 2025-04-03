@@ -107,7 +107,6 @@ install-slibtoolize:
 	mkdir -p $(DESTDIR)$(DATADIR)/$(PACKAGE)
 
 	cp -p $(SOURCE_DIR)/m4/slibtool.m4            $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/m4/sysltdl.m4             $(DESTDIR)$(DATADIR)/$(PACKAGE)
 	cp -p $(SOURCE_DIR)/m4/sltdl.m4               $(DESTDIR)$(DATADIR)/$(PACKAGE)
 	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(DATADIR)/$(PACKAGE)
 	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(DATADIR)/$(PACKAGE)
