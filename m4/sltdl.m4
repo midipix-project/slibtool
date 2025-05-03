@@ -36,4 +36,17 @@ AC_BEFORE([$0],[_SLIBTOOL_ARGUMENT_HANDLING])
 # slibtool: sltdl option
 # ---------------------------------
 slibtool_prefer_sltdl=${slibtool_prefer_sltdl:-yes}
+
+case ${slibtool_prefer_sltdl} in
+	'yes')
+		slibtool_prefer_sltdl_switch='--prefer-sltdl'
+		;;
+	*)
+		slibtool_prefer_sltdl_switch=
+		;;
+esac
+
+export slibtool_prefer_sltdl
+export slibtool_prefer_sltdl_switch
+
 ])

@@ -586,7 +586,9 @@ AC_CONFIG_COMMANDS_PRE(
 		[slibtool.cfg:Makefile],
 		[rm -f slibtool.cfg || exit 2;]
 		[_slibtool="${SLIBTOOL:-slibtool}";]
-		[${_slibtool%% *} --mkvars=Makefile --config > slibtool.cfg]))
+		[${_slibtool%% *} --mkvars=Makefile --config \
+			${slibtool_prefer_sltdl_switch:-}     \
+			> slibtool.cfg]))
 
 # optionally create libtool as a symlink to slibtool.sh
 AC_CONFIG_COMMANDS_PRE(
