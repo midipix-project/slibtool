@@ -93,6 +93,7 @@ static int slbt_output_config_mkvars(const struct slbt_driver_ctx * dctx)
 	int                                 fdout;
 	const char *                        shared_option;
 	const char *                        static_option;
+	const char *                        prefer_sltdl;
 	const struct slbt_source_version *  verinfo;
 	const struct slbt_common_ctx *      cctx;
 
@@ -104,6 +105,9 @@ static int slbt_output_config_mkvars(const struct slbt_driver_ctx * dctx)
 
 	static_option = (dctx->cctx->drvflags & SLBT_DRIVER_DISABLE_STATIC)
 		? disable : enable;
+
+	prefer_sltdl = (dctx->cctx->drvflags & SLBT_DRIVER_PREFER_SLTDL)
+		? enable : disable;
 
 	cctx = dctx->cctx;
 
@@ -130,6 +134,9 @@ static int slbt_output_config_mkvars(const struct slbt_driver_ctx * dctx)
 		return SLBT_SYSTEM_ERROR(dctx,0);
 
 	if (slbt_dprintf(fdout,"# static libraries?\n" "build_old_libs=%s\n\n",static_option) < 0)
+		return SLBT_SYSTEM_ERROR(dctx,0);
+
+	if (slbt_dprintf(fdout,"# prefer sltdl?\n" "prefer_sltdl=%s\n\n",prefer_sltdl) < 0)
 		return SLBT_SYSTEM_ERROR(dctx,0);
 
 	if (slbt_dprintf(fdout,"# host identification\n" "host=%s\n\n",cctx->host.host) < 0)
