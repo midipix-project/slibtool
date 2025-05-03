@@ -766,6 +766,7 @@ slbt_hidden int slbt_get_lconf_flags(
 	void *				addr;
 	uint64_t			optshared;
 	uint64_t			optstatic;
+	uint64_t			optsltdl;
 	char                            val[PATH_MAX];
 
 	/* driver context (ar, ranlib, cc) */
@@ -830,8 +831,20 @@ slbt_hidden int slbt_get_lconf_flags(
 		return SLBT_CUSTOM_ERROR(
 			dctx,SLBT_ERR_LCONF_PARSE);
 
-	*flags = optshared | optstatic;
+	/* sltdl option */
+	if (slbt_get_lconf_var(confctx,"prefer_sltdl=",0,&val) < 0) {
+		return SLBT_CUSTOM_ERROR(
+			dctx,SLBT_ERR_LCONF_PARSE);
 
+	} else if (!strcmp(val,"yes")) {
+		optsltdl = SLBT_DRIVER_PREFER_SLTDL;
+
+	} else {
+		optsltdl = 0;
+	}
+
+	/* return flags */
+	*flags = optshared | optstatic | optsltdl;
 
 	/* host */
 	if (!ctx->cctx.host.host) {
