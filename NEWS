@@ -1,3 +1,25 @@
+0.7.0:
+
+This minor release follows the initial release of sltdl alongside
+several corresponding fixes to and enhancements in slibtool.m4 and
+the slibtoolize command execution mode.
+
+To seamlessly use slibtool as a libtool drop-in replacement with projects
+that utilize the ltdl interfaces, it is recommended that you first install
+sltdl (obtain a release tarball from dl.foss21.org/sltdl/, or otherwise
+clone the git repository from https://git.foss21.org/cross/sltdl), and
+then _autoreconf_ the source tree of the project being built. For further
+details, please see sltdl's initial release notes.
+
+- driver: slbt_get_lconf_flags(): also parse the sltdl preference option.
+- driver: slbt_output_config_mkvars(): also export the sltdl preference option.
+- driver: slibtoolize mode: added 'libtoolize' as a synonym for 'slibtoolize'.
+- driver: --prefer-sltdl: implementation and link-mode integration.
+- slibtoolize: slbt_stoolie_options[]: fix typo.
+- slibtoolize: prefer libsltdl unless invoked with the --system-ltdl argument.
+- slibtoolize: reimplement --system-ltdl by way of an informative tag file.
+- slibtool.m4: fix embedding of the SLIBTOOL_SYSROOT & SLIBTOOL_FLAGS variables.
+
 0.6.1:
 
 This patch release fixes incorrect formatted printing of
