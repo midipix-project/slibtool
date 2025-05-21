@@ -40,11 +40,16 @@ slibtool_prefer_sltdl=${slibtool_prefer_sltdl:-yes}
 case ${slibtool_prefer_sltdl} in
 	'yes')
 		slibtool_prefer_sltdl_switch='--prefer-sltdl'
+		LIBLTDL='-lsltdl'
 		;;
 	*)
 		slibtool_prefer_sltdl_switch=
+		LIBLTDL='-lltdl'
 		;;
 esac
+
+LTDLDEPS=
+LTDLINCL=
 
 export slibtool_prefer_sltdl
 export slibtool_prefer_sltdl_switch
