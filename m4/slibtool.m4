@@ -665,6 +665,7 @@ AC_DEFUN([AM_DISABLE_STATIC],   [SLIBTOOL_DISABLE_STATIC($@)])
 AC_DEFUN([LT_LIB_M],            [SLIBTOOL_LFLAG_LIBM($@)])
 AC_DEFUN([LT_LIB_DLLOAD],       [SLIBTOOL_LFLAG_LTDL($@)])
 
+AC_DEFUN([LTDL_INIT],           [SLTDL_INIT($@)])
 
 # deprecated and no-op macros
 # ---------------------------
