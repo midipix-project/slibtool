@@ -182,6 +182,7 @@ struct slbt_driver_ctx_impl {
 	const struct slbt_archive_ctx * arctx;
 	const char *                    arpath;
 
+	const char *                    ltdlarg;
 	char *                          libname;
 	char *                          dargs;
 	char **                         dargv;
@@ -256,11 +257,14 @@ struct slbt_stoolie_ctx_impl {
 	int                             fdtgt;
 	int                             fdaux;
 	int                             fdm4;
+	int                             fdltdl;
 	const char *                    auxarg;
 	char *                          auxbuf;
 	const char *                    m4arg;
 	char *                          m4buf;
 	char **                         m4argv;
+	const char *                    ltdldir;
+	char *                          ltdlbuf;
 	struct slbt_txtfile_ctx *       acinc;
 	struct slbt_txtfile_ctx *       cfgac;
 	struct slbt_txtfile_ctx *       makam;

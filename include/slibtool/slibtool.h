@@ -94,6 +94,7 @@ extern "C" {
 #define SLBT_DRIVER_STOOLIE_COPY        SLBT_DRIVER_XFLAG(0x01000000)
 #define SLBT_DRIVER_STOOLIE_FORCE       SLBT_DRIVER_XFLAG(0x02000000)
 #define SLBT_DRIVER_STOOLIE_INSTALL     SLBT_DRIVER_XFLAG(0x04000000)
+#define SLBT_DRIVER_STOOLIE_LTDL        SLBT_DRIVER_XFLAG(0x08000000)
 
 #define SLBT_DRIVER_DLOPEN_SELF         SLBT_DRIVER_XFLAG(0x10000000)
 #define SLBT_DRIVER_DLOPEN_FORCE        SLBT_DRIVER_XFLAG(0x20000000)
@@ -408,6 +409,7 @@ struct slbt_stoolie_ctx {
 	const struct slbt_txtfile_ctx * makam;
 	const char * const *            auxarg;
 	const char * const *            m4arg;
+	const char * const *            ltdldir;
 };
 
 /* raw input api */

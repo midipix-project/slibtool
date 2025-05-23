@@ -111,5 +111,7 @@ install-slibtoolize:
 	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(DATADIR)/$(PACKAGE)
 	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(DATADIR)/$(PACKAGE)
 	cp -p $(SOURCE_DIR)/aux/ar-lib                $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/sltdl.h.in            $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/sltdl.mk.in           $(DESTDIR)$(DATADIR)/$(PACKAGE)
 
 .PHONY: install-slibtoolize

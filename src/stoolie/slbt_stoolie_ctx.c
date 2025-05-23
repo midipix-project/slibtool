@@ -10,6 +10,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -43,12 +44,16 @@ static int slbt_st_free_stoolie_ctx_impl(
 		if (ctx->fdm4 >= 0)
 			close(ctx->fdm4);
 
+		if (ctx->fdltdl >= 0)
+			close(ctx->fdltdl);
+
 		for (parg=ctx->m4argv; parg && *parg; parg++)
 			free(*parg);
 
 		free(ctx->m4buf);
 		free(ctx->m4argv);
 		free(ctx->auxbuf);
+		free(ctx->ltdlbuf);
 		free(ctx->pathbuf);
 
 		slbt_lib_free_txtfile_ctx(ctx->acinc);
@@ -71,6 +76,8 @@ int slbt_st_get_stoolie_ctx(
 	int                             fdcwd;
 	int                             fdtgt;
 	int                             fdsrc;
+	int                             fltdl;
+	const char *                    ltdlarg;
 	const char **                   pline;
 	char **                         margv;
 	const char *                    mark;
@@ -97,6 +104,7 @@ int slbt_st_get_stoolie_ctx(
 	ctx->fdtgt = fdtgt;
 	ctx->fdaux = (-1);
 	ctx->fdm4  = (-1);
+	ctx->fdltdl= (-1);
 
 	/* target directory real path */
 	if (!(ctx->pathbuf = strdup(pathbuf)))
@@ -248,6 +256,46 @@ int slbt_st_get_stoolie_ctx(
 		}
 	}
 
+	/* ltdl dir */
+	fltdl = (dctx->cctx->drvflags & SLBT_DRIVER_STOOLIE_LTDL) ? true : false;
+
+	if (!fltdl && ctx->cfgac)
+		for (pline=ctx->cfgac->txtlinev; !fltdl && *pline; pline++)
+			if ((fltdl = !strncmp(*pline,"LTDL_INIT",9)))
+				if (pline[0][9] && (pline[0][9] != '('))
+					if (pline[0][9] != ' ')
+						if (pline[0][9] != '\t')
+							fltdl = false;
+
+	if (fltdl && ctx->cfgac) {
+		if (slbt_m4fake_expand_cmdarg(
+				dctx,ctx->cfgac,
+				"LT_CONFIG_LTDL_DIR",
+				&pathbuf) < 0)
+			return slbt_st_free_stoolie_ctx_impl(
+				ctx,(-1),
+				SLBT_NESTED_ERROR(dctx));
+
+		if (pathbuf[0])
+			if (!(ctx->ltdlbuf = strdup(pathbuf)))
+				return slbt_st_free_stoolie_ctx_impl(
+					ctx,(-1),
+					SLBT_NESTED_ERROR(dctx));
+	}
+
+	if (fltdl && !ctx->ltdlbuf)
+		if ((ltdlarg = (slbt_get_driver_ictx(dctx))->ltdlarg))
+			if (!(ctx->ltdlbuf = strdup(ltdlarg)))
+				return slbt_st_free_stoolie_ctx_impl(
+					ctx,(-1),
+					SLBT_NESTED_ERROR(dctx));
+
+	if (fltdl && !ctx->ltdlbuf)
+		if (!(ctx->ltdlbuf = strdup("libltdl")))
+			return slbt_st_free_stoolie_ctx_impl(
+				ctx,(-1),
+				SLBT_NESTED_ERROR(dctx));
+
 	/* build-aux directory */
 	if (!(dpath = ctx->auxbuf))
 		dpath = slbt_this_dir;
@@ -274,10 +322,23 @@ int slbt_st_get_stoolie_ctx(
 			ctx,(-1),
 			SLBT_SYSTEM_ERROR(dctx,dpath));
 
+	/* ltdl directory */
+	if ((dpath = fltdl ? ctx->ltdlbuf : 0))
+		if ((ctx->fdltdl = openat(fdtgt,dpath,O_DIRECTORY,0)) < 0)
+			if (errno == ENOENT)
+				if (!mkdirat(fdtgt,dpath,0755))
+					ctx->fdltdl = openat(fdtgt,dpath,O_DIRECTORY,0);
+
+	if (dpath && (ctx->fdltdl < 0))
+		return slbt_st_free_stoolie_ctx_impl(
+			ctx,(-1),
+			SLBT_SYSTEM_ERROR(dctx,dpath));
+
 	/* all done */
 	ctx->path        = ctx->pathbuf;
 	ctx->auxarg      = ctx->auxbuf;
 	ctx->m4arg       = ctx->m4buf;
+	ctx->ltdldir     = ctx->ltdlbuf;
 
 	ctx->zctx.path   = &ctx->path;
 	ctx->zctx.acinc  = ctx->acinc;
@@ -285,6 +346,7 @@ int slbt_st_get_stoolie_ctx(
 	ctx->zctx.makam  = ctx->makam;
 	ctx->zctx.auxarg = &ctx->auxarg;
 	ctx->zctx.m4arg  = &ctx->m4arg;
+	ctx->zctx.ltdldir= &ctx->ltdldir;
 
 	*pctx = &ctx->zctx;
 	return 0;

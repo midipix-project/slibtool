@@ -84,15 +84,25 @@ static int slbt_exec_stoolie_perform_actions(
 {
 	struct slbt_stoolie_ctx_impl *  ictx;
 	struct stat                     st;
+
 	char                            m4dir [PATH_MAX];
 	char                            auxdir[PATH_MAX];
+
 	char                            slibm4[PATH_MAX];
 	char                            sltdl [PATH_MAX];
 	char                            m4tag [PATH_MAX];
 	char                            ltmain[PATH_MAX];
 	char                            arlib [PATH_MAX];
+
+	char                            sltdlh[PATH_MAX];
+	char                            mkfile[PATH_MAX];
+	char                            ltdlfn[PATH_MAX];
+
 	bool                            fslibm4;
 	bool                            fltmain;
+	bool                            fltdlh;
+	bool                            fsltdlh;
+	bool                            fmkfile;
 	bool                            fsysltdl;
 
 	ictx = slbt_get_stoolie_ictx(stctx);
@@ -124,6 +134,18 @@ static int slbt_exec_stoolie_perform_actions(
 			"ar-lib") < 0)
 		return SLBT_BUFFER_ERROR(dctx);
 
+	if (slbt_snprintf(
+			sltdlh,sizeof(sltdlh),"%s/%s",
+			SLBT_PACKAGE_DATADIR,
+			"sltdl.h.in") < 0)
+		return SLBT_BUFFER_ERROR(dctx);
+
+	if (slbt_snprintf(
+			mkfile,sizeof(mkfile),"%s/%s",
+			SLBT_PACKAGE_DATADIR,
+			"sltdl.mk.in") < 0)
+		return SLBT_BUFFER_ERROR(dctx);
+
 	/* --force? */
 	if (dctx->cctx->drvflags & SLBT_DRIVER_STOOLIE_FORCE) {
 		if (ictx->fdm4 >= 0)
@@ -138,6 +160,18 @@ static int slbt_exec_stoolie_perform_actions(
 			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdm4,"sysltdl.tag") < 0)
 				return SLBT_NESTED_ERROR(dctx);
 
+		if (ictx->fdltdl >= 0)
+			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdltdl,"ltdl.h") < 0)
+				return SLBT_NESTED_ERROR(dctx);
+
+		if (ictx->fdltdl >= 0)
+			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdltdl,"sltdl.h") < 0)
+				return SLBT_NESTED_ERROR(dctx);
+
+		if (ictx->fdltdl >= 0)
+			if (slbt_exec_stoolie_remove_file(dctx,ictx->fdltdl,"Makefile") < 0)
+				return SLBT_NESTED_ERROR(dctx);
+
 		if (slbt_exec_stoolie_remove_file(dctx,ictx->fdaux,"ltmain.sh") < 0)
 			return SLBT_NESTED_ERROR(dctx);
 
@@ -146,6 +180,10 @@ static int slbt_exec_stoolie_perform_actions(
 
 		fslibm4 = (ictx->fdm4 >= 0);
 		fltmain = true;
+
+		fltdlh  = (ictx->fdltdl >= 0);
+		fsltdlh = fltdlh;
+		fmkfile = fltdlh;
 	} else {
 		if (ictx->fdm4 < 0) {
 			fslibm4 = false;
@@ -168,6 +206,45 @@ static int slbt_exec_stoolie_perform_actions(
 
 		} else {
 			return SLBT_SYSTEM_ERROR(dctx,"ltmain.sh");
+		}
+
+		if (ictx->fdltdl < 0) {
+			fltdlh = false;
+
+		} else if (fstatat(ictx->fdltdl,"ltdl.h",&st,AT_SYMLINK_NOFOLLOW) == 0) {
+			fltdlh = false;
+
+		} else if (errno == ENOENT) {
+			fltdlh = true;
+
+		} else {
+			return SLBT_SYSTEM_ERROR(dctx,"ltdl.h");
+		}
+
+		if (ictx->fdltdl < 0) {
+			fsltdlh = false;
+
+		} else if (fstatat(ictx->fdltdl,"sltdl.h",&st,AT_SYMLINK_NOFOLLOW) == 0) {
+			fsltdlh = false;
+
+		} else if (errno == ENOENT) {
+			fsltdlh = true;
+
+		} else {
+			return SLBT_SYSTEM_ERROR(dctx,"sltdl.h");
+		}
+
+		if (ictx->fdltdl < 0) {
+			fmkfile = false;
+
+		} else if (fstatat(ictx->fdltdl,"Makefile",&st,AT_SYMLINK_NOFOLLOW) == 0) {
+			fmkfile = false;
+
+		} else if (errno == ENOENT) {
+			fmkfile = true;
+
+		} else {
+			return SLBT_SYSTEM_ERROR(dctx,"Makefile");
 		}
 	}
 
@@ -201,6 +278,37 @@ static int slbt_exec_stoolie_perform_actions(
 				return SLBT_NESTED_ERROR(dctx);
 
 			if (slbt_util_copy_file(ectx,arlib,auxdir) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		/* ltdl.h is always a symlink to the same-dir sltdl.h wrapper */
+		if (fltdlh) {
+			if (slbt_create_symlink_ex(
+					dctx,ectx,
+					ictx->fdltdl,
+					"sltdl.h",
+					"ltdl.h",
+					SLBT_SYMLINK_LITERAL) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		if (fsltdlh) {
+			if (slbt_snprintf(
+					ltdlfn,sizeof(ltdlfn),"%s/%s",
+					ictx->ltdldir,"sltdl.h") < 0)
+				return SLBT_BUFFER_ERROR(dctx);
+
+			if (slbt_util_copy_file(ectx,sltdlh,ltdlfn) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		if (fmkfile) {
+			if (slbt_snprintf(
+					ltdlfn,sizeof(ltdlfn),"%s/%s",
+					ictx->ltdldir,"Makefile") < 0)
+				return SLBT_BUFFER_ERROR(dctx);
+
+			if (slbt_util_copy_file(ectx,mkfile,ltdlfn) < 0)
 				return SLBT_NESTED_ERROR(dctx);
 		}
 	} else {
@@ -246,6 +354,36 @@ static int slbt_exec_stoolie_perform_actions(
 					ictx->fdaux,
 					arlib,
 					"ar-lib",
+					SLBT_SYMLINK_LITERAL) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		if (fltdlh) {
+			if (slbt_create_symlink_ex(
+					dctx,ectx,
+					ictx->fdltdl,
+					"sltdl.h",
+					"ltdl.h",
+					SLBT_SYMLINK_LITERAL) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		if (fsltdlh) {
+			if (slbt_create_symlink_ex(
+					dctx,ectx,
+					ictx->fdltdl,
+					sltdlh,
+					"sltdl.h",
+					SLBT_SYMLINK_LITERAL) < 0)
+				return SLBT_NESTED_ERROR(dctx);
+		}
+
+		if (fmkfile) {
+			if (slbt_create_symlink_ex(
+					dctx,ectx,
+					ictx->fdltdl,
+					mkfile,
+					"Makefile",
 					SLBT_SYMLINK_LITERAL) < 0)
 				return SLBT_NESTED_ERROR(dctx);
 		}
@@ -359,6 +497,11 @@ int slbt_exec_stoolie(const struct slbt_driver_ctx * dctx)
 				case TAG_STLE_VERBOSE:
 					ictx->cctx.drvflags &= ~(uint64_t)SLBT_DRIVER_SILENT;
 					ictx->cctx.drvflags |= SLBT_DRIVER_VERBOSE;
+					break;
+
+				case TAG_STLE_LTDL:
+					ictx->cctx.drvflags |= SLBT_DRIVER_STOOLIE_LTDL;
+					ictx->ltdlarg = entry->arg;
 					break;
 
 				case TAG_STLE_SYSTEM_LTDL:

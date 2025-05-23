@@ -49,10 +49,8 @@ const slbt_hidden struct argv_option slbt_stoolie_options[] = {
 			"suppress all warning messages (or not)."},
 
 	{"ltdl",	0,TAG_STLE_LTDL,ARGV_OPTARG_OPTIONAL,0,0,"<dir>",
-			"install [s]ltdl sources to %s; this option "
-			"provided is provided for the purpose of backward "
-			"compatibility, and is currently a no-op, thereby "
-			"deferring -lltdl to the system installed library."},
+			"install the shim [s]ltdl sources to %s; otherwise "
+			"to 'libltdl' if no directory had been specified."},
 
 	{"system-ltdl",0,TAG_STLE_SYSTEM_LTDL,ARGV_OPTARG_NONE,0,0,0,
 			"Create the empty tag file (or symlink) sysltdl.tag; "

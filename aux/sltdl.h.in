@@ -1,0 +1,9 @@
+/****************************************************************/
+/* slibtoolize: always use the system-installed sltdl library.  */
+/****************************************************************/
+
+#include <sltdl/sltdl.h>
+
+#ifndef LTDL_SET_PRELOADED_SYMBOLS
+#define LTDL_SET_PRELOADED_SYMBOLS()
+#endif
