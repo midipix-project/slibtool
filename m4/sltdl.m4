@@ -28,7 +28,7 @@
 
 # SLTDL_INIT
 # ----------
-AC_DEFUN([SLTDL_INIT],[SLIBTOOL_INIT($@)])
+AC_DEFUN([SLTDL_INIT],[])
 
 # __SLIBTOOL_SLTDL_OPTION
 # ------------------
