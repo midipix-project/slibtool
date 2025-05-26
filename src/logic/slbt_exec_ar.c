@@ -300,13 +300,7 @@ int slbt_exec_ar(const struct slbt_driver_ctx * dctx)
 	}
 
 	/* at least one action must be specified */
-	if (cctx->fmtflags & SLBT_DRIVER_MODE_AR_OUTPUTS) {
-		(void)0;
-
-	} else if (cctx->fmtflags & SLBT_OUTPUT_ARCHIVE_MAPFILE) {
-		(void)0;
-
-	} else if (cctx->fmtflags & SLBT_OUTPUT_ARCHIVE_DLSYMS) {
+	if (cctx->fmtflags & SLBT_OUTPUT_ARCHIVE_DLSYMS) {
 		if (!cctx->dlunit) {
 			slbt_dprintf(fderr,
 				"%s: missing -Wdlunit: generation of a dlsyms vtable "
@@ -321,6 +315,12 @@ int slbt_exec_ar(const struct slbt_driver_ctx * dctx)
 					dctx,
 					SLBT_ERR_AR_DLUNIT_NOT_SPECIFIED));
 		}
+	} else if (cctx->fmtflags & SLBT_DRIVER_MODE_AR_OUTPUTS) {
+		(void)0;
+
+	} else if (cctx->fmtflags & SLBT_OUTPUT_ARCHIVE_MAPFILE) {
+		(void)0;
+
 	} else if (!(cctx->drvflags & SLBT_DRIVER_MODE_AR_ACTIONS)) {
 		if (cctx->drvflags & SLBT_DRIVER_VERBOSITY_ERRORS)
 			slbt_dprintf(fderr,
