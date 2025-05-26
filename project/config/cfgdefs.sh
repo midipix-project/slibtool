@@ -15,8 +15,34 @@
 . "$mb_project_dir/sofort/cfgtest/cfgtest.sh"
 
 
+# slibtool now provides a mechanism to specifiy the
+# preferred ar(1), as(1), nm(1), and ranlib(1) to be
+# invoked by slibtool(1) when used for native builds
+# and when no other tool had been specified. These
+# configure arguments only affect slibtool's runtime
+# tool choices, and the configure arguments below
+# accordingly refer to the preferred "host" (rather
+# than "native") tools.
+
+_mb_quotes='\"'
+
 for arg ; do
 	case "$arg" in
+		--with-preferred-host-ar=*)
+                        slbt_preferred_host_ar=${_mb_quotes}${arg#*=}${_mb_quotes}
+			;;
+
+		--with-preferred-host-as=*)
+                        slbt_preferred_host_as=${_mb_quotes}${arg#*=}${_mb_quotes}
+			;;
+
+		--with-preferred-host-nm=*)
+                        slbt_preferred_host_nm=${_mb_quotes}${arg#*=}${_mb_quotes}
+			;;
+
+		--with-preferred-host-ranlib=*)
+                        slbt_preferred_host_ranlib=${_mb_quotes}${arg#*=}${_mb_quotes}
+			;;
 		*)
 			error_msg ${arg#}: "unsupported config argument."
 			exit 2
@@ -26,7 +52,12 @@ done
 
 cfgdefs_output_custom_defs()
 {
-	cat "$mb_project_dir/project/config/cfgdefs.in" > cfgdefs.mk
+	if [ $mb_cfgtest_cfgtype = 'host' ]; then
+		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_AR=${slbt_preferred_host_ar:-0}
+		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_AS=${slbt_preferred_host_as:-0}
+		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_NM=${slbt_preferred_host_nm:-0}
+		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_RANLIB=${slbt_preferred_host_ranlib:-0}
+	fi
 }
 
 
@@ -50,9 +81,6 @@ cfgdefs_perform_target_tests()
 	cfgtest_newline
 }
 
-# cfgdefs.in --> cfgdefs.mk
-cfgdefs_output_custom_defs
-
 # strict: some tests might fail
 set +e
 
@@ -61,6 +89,9 @@ cfgdefs_perform_target_tests
 
 # strict: restore mode
 set -e
+
+# cfgdefs.in --> cfgdefs.mk
+cfgdefs_output_custom_defs
 
 # all done
 return 0

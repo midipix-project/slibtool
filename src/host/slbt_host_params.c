@@ -21,6 +21,11 @@
 #include "slibtool_visibility_impl.h"
 #include "slibtool_ar_impl.h"
 
+/* preferred native tools, specified at the time of configuration for the host */
+static const char * slbt_native_ar_variant     = SLBT_PREFERRED_HOST_AR;
+static const char * slbt_native_as_variant     = SLBT_PREFERRED_HOST_AS;
+static const char * slbt_native_nm_variant     = SLBT_PREFERRED_HOST_NM;
+static const char * slbt_native_ranlib_variant = SLBT_PREFERRED_HOST_RANLIB;
 
 /* annotation strings */
 static const char cfgexplicit[] = "command-line argument";
@@ -31,7 +36,8 @@ static const char cfgtarget[]   = "derived from <target>";
 static const char cfgcompiler[] = "derived from <compiler>";
 static const char cfgnmachine[] = "native (cached in ccenv/host.mk)";
 static const char cfgxmachine[] = "foreign (derived from -dumpmachine)";
-static const char cfgnative[]   = "native";
+static const char cfguseropt[]  = "native (preferred alternative)";
+static const char cfgnative[]   = "native (system default)";
 
 static void slbt_get_host_quad(
 	char *	hostbuf,
@@ -102,6 +108,7 @@ slbt_hidden int slbt_init_host_params(
 	int		ecode;
 	int             cint;
 	size_t		toollen;
+	size_t          altlen;
 	char *		dash;
 	char *		base;
 	char *		mark;
@@ -258,6 +265,22 @@ slbt_hidden int slbt_init_host_params(
 	toollen += strlen("-utility-name");
 	toollen += host->ranlib ? strlen(host->ranlib) : 0;
 
+	if (fnative && slbt_native_ar_variant)
+		if ((altlen = strlen(slbt_native_ar_variant)) > toollen)
+			toollen = altlen;
+
+	if (fnative && slbt_native_as_variant)
+		if ((altlen = strlen(slbt_native_as_variant)) > toollen)
+			toollen = altlen;
+
+	if (fnative && slbt_native_nm_variant)
+		if ((altlen = strlen(slbt_native_nm_variant)) > toollen)
+			toollen = altlen;
+
+	if (fnative && slbt_native_ranlib_variant)
+		if ((altlen = strlen(slbt_native_ranlib_variant)) > toollen)
+			toollen = altlen;
+
 	/* ar */
 	if (host->ar)
 		cfgmeta->ar = cfgmeta_ar ? cfgmeta_ar : cfgexplicit;
@@ -265,7 +288,11 @@ slbt_hidden int slbt_init_host_params(
 		if (!(drvhost->ar = calloc(1,toollen)))
 			return -1;
 
-		if (fnative) {
+		if (fnative && slbt_native_ar_variant) {
+			strcpy(drvhost->ar,slbt_native_ar_variant);
+			cfgmeta->ar = cfguseropt;
+			arprobe = 0;
+		} else if (fnative) {
 			strcpy(drvhost->ar,"ar");
 			cfgmeta->ar = cfgnative;
 			arprobe = 0;
@@ -317,10 +344,14 @@ slbt_hidden int slbt_init_host_params(
 			}
 
 			/* if target is the native target, fallback to native ar */
-			if (ecode && !strcmp(host->host,SLBT_MACHINE)) {
-				strcpy(drvhost->ar,"ar");
-				cfgmeta->ar = cfgnative;
-				fnative     = true;
+			if ((fnative = (ecode && !strcmp(host->host,SLBT_MACHINE)))) {
+				if (slbt_native_ar_variant) {
+					strcpy(drvhost->ar,slbt_native_ar_variant);
+					cfgmeta->ar = cfguseropt;
+				} else {
+					strcpy(drvhost->ar,"ar");
+					cfgmeta->ar = cfgnative;
+				}
 			}
 
 			/* fdcwd */
@@ -334,6 +365,13 @@ slbt_hidden int slbt_init_host_params(
 		}
 
 		host->ar = drvhost->ar;
+	}
+
+	if (!fnative && slbt_native_ar_variant) {
+		if (!strcmp(host->ar,slbt_native_ar_variant)) {
+			fnative   = true;
+			fnativear = true;
+		}
 	}
 
 	if (!fnative && !strncmp(host->ar,"ar",2)) {
@@ -350,7 +388,10 @@ slbt_hidden int slbt_init_host_params(
 		if (!(drvhost->as = calloc(1,toollen)))
 			return -1;
 
-		if (fnative) {
+		if (fnative && slbt_native_as_variant) {
+			strcpy(drvhost->as,slbt_native_as_variant);
+			cfgmeta->as = cfguseropt;
+		} else if (fnative) {
 			strcpy(drvhost->as,"as");
 			cfgmeta->as = fnativear ? cfgar : cfgnative;
 		} else {
@@ -381,7 +422,10 @@ slbt_hidden int slbt_init_host_params(
 		if (!(drvhost->nm = calloc(1,toollen)))
 			return -1;
 
-		if (fnative) {
+		if (fnative && slbt_native_nm_variant) {
+			strcpy(drvhost->nm,slbt_native_nm_variant);
+			cfgmeta->nm = cfguseropt;
+		} else if (fnative) {
 			strcpy(drvhost->nm,"nm");
 			cfgmeta->nm = fnativear ? cfgar : cfgnative;
 		} else {
@@ -399,7 +443,10 @@ slbt_hidden int slbt_init_host_params(
 		if (!(drvhost->ranlib = calloc(1,toollen)))
 			return -1;
 
-		if (fnative) {
+		if (fnative && slbt_native_ranlib_variant) {
+			strcpy(drvhost->ranlib,slbt_native_ranlib_variant);
+			cfgmeta->ranlib = cfguseropt;
+		} else if (fnative) {
 			strcpy(drvhost->ranlib,"ranlib");
 			cfgmeta->ranlib = fnativear ? cfgar : cfgnative;
 		} else {
