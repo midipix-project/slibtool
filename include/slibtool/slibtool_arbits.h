@@ -5,6 +5,7 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include <stddef.h>
 
 #define AR_SIGNATURE            "!<arch>\n"
