@@ -8,6 +8,9 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 
+#ifndef AR_COMMON_DEFS
+#define AR_COMMON_DEFS
+
 #define AR_SIGNATURE            "!<arch>\n"
 
 #define AR_MEMBER_ATTR_DEFAULT  (0x00)
@@ -180,6 +183,8 @@ struct ar_meta_armap_info {
 	const struct ar_meta_armap_common_32 *  ar_armap_common_32;
 	const struct ar_meta_armap_common_64 *  ar_armap_common_64;
 };
+
+#endif
 
 #ifdef __cplusplus
 }
