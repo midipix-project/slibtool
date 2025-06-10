@@ -1,3 +1,18 @@
+0.7.1:
+
+This patch release enhances the slibtoolize's ability to serve as
+a libtoolize drop-in replacement. In terms of new features, it is
+now possible to configure the default binary tool (ar, as, nm, ranlib)
+to be invoked by slibtool (as opposed to the non-prefixed tools that
+are mandated by posix) when performing a native build.
+
+
+project:     new configure options: --with-preferred-host-{ar|as|nm|ranlib}
+slibtool.m4: provide the LT_CONFIG_LTDL_DIR macro.
+slibtool.m4: provide the LTDL_INIT macro.
+slibtool.m4, m4/sltdl.m4: provide the LIBLTDL, LTDLINCL, and LTDLDEPS vars.
+slibtoolize: fully support --ltdl, LTDL_INIT, and LT_CONFIG_LTDL_DIR.
+
 0.7.0:
 
 This minor release follows the initial release of sltdl alongside
