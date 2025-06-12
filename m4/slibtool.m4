@@ -543,7 +543,7 @@ _SLIBTOOL_ARG_WITH([sysroot],[absolute path to the target's sysroot],[slibtool_s
 # --------------------
 slibtool_set_flavor
 LIBTOOL='$(SLIBTOOL)'
-SLIBTOOL="${SLIBTOOL} ${SLIBTOOL_FLAGS}"
+SLIBTOOL="${SLIBTOOL}${SLIBTOOL_FLAGS:+ }${SLIBTOOL_FLAGS}"
 
 AC_SUBST([LIBTOOL])
 AC_SUBST([SLIBTOOL])
