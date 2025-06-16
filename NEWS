@@ -1,3 +1,14 @@
+0.7.2:
+
+The purpose of this patch release, with only four small changes since the
+previous tagged release, is to accelerate testing of slibtool and slibtoolize
+integration on Adelie Linux.
+
+m4/slibtool.m4: SLIBTOOL: avoid a trailing space when SLIBTOOL_FLAGS is not set.
+m4/slibtool.m4: AR, NM, RANLIB: special-case identical ${build} and ${host}.
+slbt_init_host_params(): --mkvars=... code path: enable heuristics as needed.
+slbt_get_mkvars_var(): optimmize the code path for set but empty variables.
+
 0.7.1:
 
 This patch release enhances the slibtoolize's ability to serve as
