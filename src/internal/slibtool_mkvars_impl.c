@@ -60,7 +60,7 @@ static int slbt_get_mkvars_var(
 	}
 
 	/* not found? */
-	if (!match) {
+	if (!match || !match[0]) {
 		(*val)[0] = '\0';
 		return 0;
 	}
