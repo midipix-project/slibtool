@@ -100,7 +100,8 @@ slbt_hidden int slbt_init_host_params(
 	const char *                    cfgmeta_as,
 	const char *                    cfgmeta_nm,
 	const char *                    cfgmeta_ranlib,
-	const char *                    cfgmeta_dlltool)
+	const char *                    cfgmeta_dlltool,
+	const char *                    mkvars)
 {
 	int		fdcwd;
 	int		arprobe;
@@ -299,6 +300,8 @@ slbt_hidden int slbt_init_host_params(
 		} else if (cctx->mode == SLBT_MODE_LINK) {
 			arprobe = true;
 		} else if (cctx->mode == SLBT_MODE_INFO) {
+			arprobe = true;
+		} else if (mkvars) {
 			arprobe = true;
 		} else {
 			arprobe = false;
@@ -663,7 +666,7 @@ int  slbt_host_set_althost(
 			&ictx->ctx.ahost,
 			&ictx->ctx.cctx.ahost,
 			&ictx->ctx.cctx.acfgmeta,
-			0,0,0,0,0,0)) {
+			0,0,0,0,0,0,0)) {
 		slbt_free_host_params(&ictx->ctx.ahost);
 		return SLBT_CUSTOM_ERROR(ctx,SLBT_ERR_HOST_INIT);
 	}

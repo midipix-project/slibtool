@@ -1094,7 +1094,8 @@ int slbt_lib_get_driver_ctx(
 			cfgmeta_as,
 			cfgmeta_nm,
 			cfgmeta_ranlib,
-			cfgmeta_dlltool))
+			cfgmeta_dlltool,
+			mkvars))
 		return slbt_lib_get_driver_ctx_fail(&ctx->ctx,0);
 
 	/* host tool arguments */

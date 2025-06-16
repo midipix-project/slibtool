@@ -348,7 +348,8 @@ int slbt_init_host_params(
 	const char *                    cfgmeta_as,
 	const char *                    cfgmeta_nm,
 	const char *                    cfgmeta_ranlib,
-	const char *                    cfgmeta_dlltool);
+	const char *                    cfgmeta_dlltool,
+	const char *                    mkvars);
 
 
 void slbt_free_host_params(struct slbt_host_strs * host);
