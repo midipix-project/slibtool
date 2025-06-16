@@ -347,7 +347,7 @@ if [[ -n "${host}" ]] &&  [[ -z "${AR}" ]]; then
 	AC_CHECK_PROG([AR],[llvm-ar],[llvm-ar])
 fi
 
-if [[ -z "${host}" ]]; then
+if [[ "${host:-x}" = "${build:-x}" ]]; then
 	AC_CHECK_PROG([AR],[ar],[ar])
 fi
 ])
@@ -371,7 +371,7 @@ if [[ -n "${host}" ]] &&  [[ -z "${RANLIB}" ]]; then
 	AC_CHECK_PROG([RANLIB],[llvm-ranlib],[llvm-ranlib])
 fi
 
-if [[ -z "${host}" ]]; then
+if [[ "${host:-x}" = "${build:-x}" ]]; then
 	AC_CHECK_PROG([RANLIB],[ranlib],[ranlib])
 fi
 ])
@@ -395,7 +395,7 @@ if [[ -n "${host}" ]] &&  [[ -z "${NM}" ]]; then
 	AC_CHECK_PROG([NM],[llvm-nm],[llvm-nm])
 fi
 
-if [[ -z "${host}" ]]; then
+if [[ "${host:-x}" = "${build:-x}" ]]; then
 	AC_CHECK_PROG([NM],[nm],[nm])
 fi
 ])
