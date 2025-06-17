@@ -28,6 +28,10 @@ _mb_quotes='\"'
 
 for arg ; do
 	case "$arg" in
+		--m4-dir=*)
+                        m4_dir=${arg#*=}
+			;;
+
 		--with-preferred-host-ar=*)
                         slbt_preferred_host_ar=${_mb_quotes}${arg#*=}${_mb_quotes}
 			;;
@@ -52,11 +56,20 @@ done
 
 cfgdefs_output_custom_defs()
 {
+	if [ -z "${m4_dir:-}" ]; then
+		m4_dir="${mb_datadir}/${mb_package}"
+	fi
+
 	if [ $mb_cfgtest_cfgtype = 'host' ]; then
 		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_AR=${slbt_preferred_host_ar:-0}
 		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_AS=${slbt_preferred_host_as:-0}
 		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_NM=${slbt_preferred_host_nm:-0}
 		cfgtest_cflags_append -DSLBT_PREFERRED_HOST_RANLIB=${slbt_preferred_host_ranlib:-0}
+
+		cfgtest_newline
+		cfgtest_comment '# m4,aux'
+		mb_cfgtest_makevar='M4_DIR'
+		cfgtest_makevar_set "$m4_dir"
 	fi
 }
 

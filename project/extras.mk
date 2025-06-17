@@ -104,14 +104,14 @@ install-app-extras:
 	mv bin/$(STOOLIE)$(OS_APP_SUFFIX).tmp         $(DESTDIR)$(BINDIR)/$(STOOLIE)$(OS_APP_SUFFIX)
 
 install-slibtoolize:
-	mkdir -p $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	mkdir -p $(DESTDIR)$(M4_DIR)
 
-	cp -p $(SOURCE_DIR)/m4/slibtool.m4            $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/m4/sltdl.m4               $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/aux/ar-lib                $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/aux/sltdl.h.in            $(DESTDIR)$(DATADIR)/$(PACKAGE)
-	cp -p $(SOURCE_DIR)/aux/sltdl.mk.in           $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/m4/slibtool.m4            $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/m4/sltdl.m4               $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/ar-lib                $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/sltdl.h.in            $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/sltdl.mk.in           $(DESTDIR)$(M4_DIR)
 
 .PHONY: install-slibtoolize
