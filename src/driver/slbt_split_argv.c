@@ -46,6 +46,7 @@ slbt_hidden int slbt_split_argv(
 	bool				flast;
 	bool				fcopy;
 	bool				altmode;
+	bool				execmode;
 	size_t				size;
 	const char *			base;
 	struct argv_meta *		meta;
@@ -129,6 +130,9 @@ slbt_hidden int slbt_split_argv(
 	/* as well as -print-aux-dir and -print-m4-dir? */
 	mode = help = version = info = config = finish = features = ccwrap = dumpmachine = printdir = printext = aropt = stoolieopt = 0;
 
+	/* --mode=execute implies -- right after the executable path argument */
+	execmode = false;
+
 	for (entry=meta->entries; entry->fopt; entry++)
 		if (entry->tag == TAG_MODE)
 			mode = entry;
@@ -166,6 +170,9 @@ slbt_hidden int slbt_split_argv(
 
 	if (!altmode && mode && !strcmp(mode->arg,"slibtoolize"))
 		stoolieopt = mode;
+
+	if (mode && !strcmp(mode->arg,"execute"))
+		execmode = true;
 
 	/* release temporary argv meta context */
 	slbt_argv_free(meta);
@@ -221,6 +228,9 @@ slbt_hidden int slbt_split_argv(
 	for (i=0,flast=false,dargv=sargv->dargv,dst=sargv->dargs; i<argc; i++) {
 		if ((fcopy = (flast || altmode || aropt || stoolieopt))) {
 			(void)0;
+
+		} else if (i == 0) {
+			fcopy = true;
 
 		} else if (!strcmp(argv[i],"--")) {
 			flast = true;
@@ -319,6 +329,9 @@ slbt_hidden int slbt_split_argv(
 
 		} else {
 			fcopy = true;
+
+			if (execmode)
+				flast = true;
 		}
 
 		if (fcopy) {
