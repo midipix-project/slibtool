@@ -112,13 +112,13 @@ static int slbt_exec_stoolie_perform_actions(
 	/* source files */
 	if (slbt_snprintf(
 			slibm4,sizeof(slibm4),"%s/%s",
-			SLBT_PACKAGE_DATADIR,
+			SLBT_PACKAGE_M4DIR,
 			"slibtool.m4") < 0)
 		return SLBT_BUFFER_ERROR(dctx);
 
 	if (slbt_snprintf(
 			sltdl,sizeof(sltdl),"%s/%s",
-			SLBT_PACKAGE_DATADIR,
+			SLBT_PACKAGE_M4DIR,
 			"sltdl.m4") < 0)
 		return SLBT_BUFFER_ERROR(dctx);
 

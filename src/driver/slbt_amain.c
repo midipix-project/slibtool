@@ -64,7 +64,7 @@ static ssize_t slbt_print_aux_dir(int fdout)
 
 static ssize_t slbt_print_m4_dir(int fdout)
 {
-	return slbt_dprintf(fdout,"%s\n",SLBT_PACKAGE_DATADIR);
+	return slbt_dprintf(fdout,"%s\n",SLBT_PACKAGE_M4DIR);
 }
 
 static ssize_t slbt_print_shared_ext(int fdout, struct slbt_driver_ctx * dctx)

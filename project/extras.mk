@@ -4,8 +4,11 @@ CFLAGS_APP_ATTR		+= -DSLBT_APP
 
 CFLAGS_MACHINE		:= -DSLBT_MACHINE=\"$(CC_HOST)\"
 CFLAGS_PKGDATA		:= -DSLBT_PACKAGE_DATADIR=\"$(DATADIR)/$(PACKAGE)\"
+CFLAGS_M4DIR		:= -DSLBT_PACKAGE_M4DIR=\"$(M4_DIR)\"
+
 CFLAGS_CONFIG		+= $(CFLAGS_MACHINE)
 CFLAGS_CONFIG		+= $(CFLAGS_PKGDATA)
+CFLAGS_CONFIG		+= $(CFLAGS_M4DIR)
 CFLAGS_CONFIG		+= $(CFLAGS_ATTR_VISIBILITY_HIDDEN)
 
 src/driver/slbt_driver_ctx.o:	version.tag
@@ -105,13 +108,14 @@ install-app-extras:
 
 install-slibtoolize:
 	mkdir -p $(DESTDIR)$(M4_DIR)
+	mkdir -p $(DESTDIR)$(DATADIR)/$(PACKAGE)
 
 	cp -p $(SOURCE_DIR)/m4/slibtool.m4            $(DESTDIR)$(M4_DIR)
 	cp -p $(SOURCE_DIR)/m4/sltdl.m4               $(DESTDIR)$(M4_DIR)
-	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(M4_DIR)
-	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(M4_DIR)
-	cp -p $(SOURCE_DIR)/aux/ar-lib                $(DESTDIR)$(M4_DIR)
-	cp -p $(SOURCE_DIR)/aux/sltdl.h.in            $(DESTDIR)$(M4_DIR)
-	cp -p $(SOURCE_DIR)/aux/sltdl.mk.in           $(DESTDIR)$(M4_DIR)
+	cp -p $(SOURCE_DIR)/aux/ltmain.sh             $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/slibtool.sh           $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/ar-lib                $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/sltdl.h.in            $(DESTDIR)$(DATADIR)/$(PACKAGE)
+	cp -p $(SOURCE_DIR)/aux/sltdl.mk.in           $(DESTDIR)$(DATADIR)/$(PACKAGE)
 
 .PHONY: install-slibtoolize
